@@ -44,9 +44,11 @@ The Logic Flow:
 
         Why? Because Softmax(-1,000,000,000) ≈ 0. This mathematically forces the attention weight to zero, effectively cutting the wire between unconnected nodes.
 
-Visualizing the Mask:
-Connection	Adjacency Value	Mask Value	Raw Score	Filled Score	Final Probability (Softmax)
-Connected	1	False	2.5	2.5	High (e.g., 0.9)
-Disconnected	0	True	1.8	-1e9	Zero (0.0)
+### Visualizing the Mask Logic
+
+| Connection Type | Adjacency Value (`adj`) | Mask Value (`adj == 0`) | Raw Score | Filled Score | Final Probability (Softmax) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Connected** | `1` | `False` | `2.5` | `2.5` | **High** (e.g., 0.9) |
+| **Disconnected** | `0` | `True` | `1.8` | **`-1e9`** | **Zero** (0.0) |
 
 
