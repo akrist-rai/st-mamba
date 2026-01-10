@@ -64,7 +64,8 @@ ggraph TD
 
 
 
-    graph TD
+graph TD
+
     Input["Input Tensor\n(B, T, N, F)"] --> View1["View / Flatten\n(B*T, N, F)"]
     View1 --> GAT["Spatial Layer (GAT)\nNodes talk to Neighbors"]
     GAT --> AddNorm1["Add & Norm"]
