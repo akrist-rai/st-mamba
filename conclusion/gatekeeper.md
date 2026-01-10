@@ -4,10 +4,11 @@ This section details the tensor manipulations used to enable Multi-Head Attentio
 1. The "Split & Shuffle" (Multi-Head Preparation)
 
 To enable the model to view the graph from multiple perspectives (Heads) simultaneously, we perform a specific sequence of dimension transformations.
-Python
+```Python
 
 # The Code
 q = self.W_q(h).view(B*T, N, self.num_heads, self.head_dim).transpose(1, 2)
+```
 
 Step-by-Step Tensor Trace:
 Step	Operation	Shape [Dims]	Explanation
