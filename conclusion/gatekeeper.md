@@ -1,65 +1,51 @@
-```python
-# 1.3 Apply Graph Mask (Using Adjacency Matrix)
+⚙️ Implementation Details: Inside the GAT Layer
 
-        mask = (adj == 0).view(1, 1, N, N)
+This section details the tensor manipulations used to enable Multi-Head Attention and enforce Graph connectivity constraints.
+1. The "Split & Shuffle" (Multi-Head Preparation)
 
-        scores = scores.masked_fill(mask, -1e9)
-```
+To enable the model to view the graph from multiple perspectives (Heads) simultaneously, we perform a specific sequence of dimension transformations.
+Python
+
+# The Code
+q = self.W_q(h).view(B*T, N, self.num_heads, self.head_dim).transpose(1, 2)
+
+Step-by-Step Tensor Trace:
+Step	Operation	Shape [Dims]	Explanation
+1	Input	[Batch, N, Total_Dim]	The dense feature vector for every node.
+2	Project	[Batch, N, Total_Dim]	Linear layer transforms features into "Query" space.
+3	View (Split)	[Batch, N, Heads, Head_Dim]	The Split. We cut the big vector into 4 smaller, parallel vectors.
+4	Transpose (Shuffle)	[Batch, Heads, N, Head_Dim]	The Shuffle. We move Heads to Dim 1 so PyTorch treats them as independent parallel matrices.
+
+    Why? This alignment allows us to compute attention for all 4 heads across all 100 batches in a single matrix multiplication operation.
+
+2. The "Gatekeeper" (Adjacency Masking)
+
+Standard transformers allow every node to talk to every other node (O(N2)). In a Graph Neural Network, nodes must only attend to their physical neighbors. We enforce this using a Mask.
+Python
+
+# The Code
+mask = (adj == 0).view(1, 1, N, N)
+scores = scores.masked_fill(mask, -1e9)
+
+The Logic Flow:
+
+    Boolean Mask (adj == 0): Creates a True/False grid.
+
+        True = Path is Blocked (No road).
+
+        False = Path is Open (Road exists).
+
+    Broadcast (view(1, 1, N, N)): Expands the single city map to apply to every Batch and every Head automatically.
+
+    Mask Fill (-1e9):
+
+        We replace the score of disconnected nodes with Negative One Billion.
+
+        Why? Because Softmax(-1,000,000,000) ≈ 0. This mathematically forces the attention weight to zero, effectively cutting the wire between unconnected nodes.
+
+Visualizing the Mask:
+Connection	Adjacency Value	Mask Value	Raw Score	Filled Score	Final Probability (Softmax)
+Connected	1	False	2.5	2.5	High (e.g., 0.9)
+Disconnected	0	True	1.8	-1e9	Zero (0.0)
 
 
-"Gatekeeper" of your Graph Neural Network.
-
-It enforces the rule: "You can only talk to your actual neighbors."
-
-Without these two lines, your model is not a Graph Neural Network; it is just a standard Transformer where every node talks to every other node (Global Attention). These lines force the "Graph" structure.
-
-Here is the step-by-step breakdown:
-1. The Logic: mask = (adj == 0)
-
-    Input: adj is your Adjacency Matrix (0s and 1s).
-
-        1: Connected (Road exists).
-
-        0: Disconnected (No road).
-
-    Operation: adj == 0 checks for the disconnected spots.
-
-    Result: It creates a True/False grid (Boolean Tensor).
-
-        True: "This path is BLOCKED." (Where adj was 0).
-
-        False: "This path is OPEN." (Where adj was 1).
-
-2. The Shape: .view(1, 1, N, N)
-
-    The Problem:
-
-        Your scores tensor is huge: [Batch, Heads, N, N]. (e.g., 100 batches, 4 heads).
-
-        Your mask tensor is small: [N, N]. (Just one map of the city).
-
-    The Fix: .view(1, 1, N, N) adds two "fake" dimensions to the front.
-
-    Broadcasting: This tells PyTorch: "Take this one city map and apply it to every single Batch and every single Attention Head."
-
-3. The Action: scores.masked_fill(mask, -1e9)
-
-    Goal: We want the attention probability to be 0%.
-
-    The Math: We are about to feed these scores into a Softmax function.
-
-        Softmax formula: ∑exex​
-
-        If we put in 0: e0=1 (100% attention! Bad!).
-
-        If we put in -1,000,000,000: e−1000000000≈0.0000... (0% attention. Perfect!).
-
-    The Command: masked_fill(mask, -1e9) says: "Wherever the mask is True (Blocked), replace the score with negative one billion."
-
-Summary Visualization
-Step|	Node A → Node B	Value	|Softmax Result	|Meaning|
-Raw Score	|Calculated by Q & K	|2.5	...	|"They seem related."
-Adjacency	|Check Map	|0 (No Road)	...	|"But they aren't connected."
-Mask	|adj == 0	|True	...	|"Block this!"|
-Fill	|Apply -1e9	|-1,000,000,000	...	|"Delete the connection."
-Final	|Softmax	...	|0.0	|"Node A ignores Node B."
