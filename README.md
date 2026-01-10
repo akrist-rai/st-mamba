@@ -117,6 +117,7 @@ class FusedSTMambaBlock(nn.Module):
         # STEP 4: RESTORE SHAPE
         # ==========================================
         # [B*N, T, F] -> [B, N, T, F] -> [B, T, N, F]
+        '''
         x_final = x_temporal.view(B, N, T, F).permute(0, 2, 1, 3).contiguous()
         
         return x_final
