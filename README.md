@@ -38,9 +38,9 @@ What the STMambaBlock does. We package Space and Time into a single atom. We rep
 
 3. The "Fused" Code (All-in-One Class)
 
-If you prefer to see the GAT logic written directly inside the ST-Mamba Block (so there is no separate class GATLayer), here is the "All-in-One" implementation. This makes it very clear that Space and Time are just two steps of the same layer.
-Python
+## GAT logic written directly inside the ST-Mamba Block (so there is no separate class GATLayer), here is the "All-in-One" implementation. This makes it very clear that Space and Time are just two steps of the same layer.
 
+Python
 class FusedSTMambaBlock(nn.Module):
     """
     True ST-Mamba: GAT and Mamba logic fused into a single class.
