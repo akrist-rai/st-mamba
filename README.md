@@ -13,7 +13,7 @@ The core of the model is the `STMambaBlock`, which processes data in an interlea
 
 ### Data Flow Diagram
 
-```mermaid
+
 graph TD
     Input[Input Tensor\n(B, T, N, F)] --> View1[View / Flatten\n(B*T, N, F)]
     View1 --> GAT[Spatial Layer (GAT)\nNodes talk to Neighbors]
@@ -34,6 +34,6 @@ graph TD
     style Pivot2 fill:#f9f,stroke:#333
     style GAT fill:#bbf,stroke:#333
     style Mamba fill:#bfb,stroke:#333
-```
+
 
 
