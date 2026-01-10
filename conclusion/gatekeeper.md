@@ -57,9 +57,9 @@ Here is the step-by-step breakdown:
     The Command: masked_fill(mask, -1e9) says: "Wherever the mask is True (Blocked), replace the score with negative one billion."
 
 Summary Visualization
-Step	Node A → Node B	Value	Softmax Result	Meaning
-Raw Score	Calculated by Q & K	2.5	...	"They seem related."
-Adjacency	Check Map	0 (No Road)	...	"But they aren't connected."
-Mask	adj == 0	True	...	"Block this!"
-Fill	Apply -1e9	-1,000,000,000	...	"Delete the connection."
-Final	Softmax	...	0.0	"Node A ignores Node B."
+Step|	Node A → Node B	Value	|Softmax Result	|Meaning|
+Raw Score	|Calculated by Q & K	|2.5	...	|"They seem related."
+Adjacency	|Check Map	|0 (No Road)	...	|"But they aren't connected."
+Mask	|adj == 0	|True	...	|"Block this!"|
+Fill	|Apply -1e9	|-1,000,000,000	...	|"Delete the connection."
+Final	|Softmax	...	|0.0	|"Node A ignores Node B."
