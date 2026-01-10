@@ -24,8 +24,7 @@
 
 
 1. The Old Way (Sequential)
-
-What you had in your original snippet. You process all the space first, then all the time. They don't talk to each other frequently.
+I process all the space first, then all the time. They don't talk to each other frequently.
 Code snippet
 
 graph LR
