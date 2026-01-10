@@ -13,22 +13,21 @@ The core of the model is the `STMambaBlock`, which processes data in an interlea
 
 ### Data Flow Diagram
 
-
 graph TD
-    Input[Input Tensor\n(B, T, N, F)] --> View1[View / Flatten\n(B*T, N, F)]
-    View1 --> GAT[Spatial Layer (GAT)\nNodes talk to Neighbors]
-    GAT --> AddNorm1[Add & Norm]
-    AddNorm1 --> View2[View / Restore\n(B, T, N, F)]
+    Input["Input Tensor\n(B, T, N, F)"] --> View1["View / Flatten\n(B*T, N, F)"]
+    View1 --> GAT["Spatial Layer (GAT)\nNodes talk to Neighbors"]
+    GAT --> AddNorm1["Add & Norm"]
+    AddNorm1 --> View2["View / Restore\n(B, T, N, F)"]
     
-    View2 --> Pivot1{The Pivot\nPermute Dimensions}
-    Pivot1 --> Reshape[Reshape\n(B*N, T, F)]
+    View2 --> Pivot1{"The Pivot\nPermute Dimensions"}
+    Pivot1 --> Reshape["Reshape\n(B*N, T, F)"]
     
-    Reshape --> Mamba[Temporal Layer (Mamba)\nPast talks to Future]
-    Mamba --> AddNorm2[Add & Norm]
+    Reshape --> Mamba["Temporal Layer (Mamba)\nPast talks to Future"]
+    Mamba --> AddNorm2["Add & Norm"]
     
-    AddNorm2 --> Restore[Restore Dimensions\n(B, N, T, F)]
-    Restore --> Pivot2{Pivot Back}
-    Pivot2 --> Output[Output Tensor\n(B, T, N, F)]
+    AddNorm2 --> Restore["Restore Dimensions\n(B, N, T, F)"]
+    Restore --> Pivot2{"Pivot Back"}
+    Pivot2 --> Output["Output Tensor\n(B, T, N, F)"]
     
     style Pivot1 fill:#f9f,stroke:#333
     style Pivot2 fill:#f9f,stroke:#333
