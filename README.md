@@ -12,7 +12,7 @@ The core of the model is the `STMambaBlock`, which processes data in an interlea
 3.  **Temporal Pass (Mamba):** Each node's history is processed independently using Mamba's linear-time sequence modeling.
 
 ### Data Flow Diagram
-``` mermaid
+
 ggraph TD
     %% Define nodes with descriptive text based on the code's logic
     Input(["Start: Raw Input Data\n(Historical Node Features + Graph Structure)"])
@@ -66,6 +66,6 @@ ggraph TD
     style TemporalPass fill:#4db6ac,stroke:#333,color:black
     style PivotT fill:#ffd54f,stroke:#333,color:black
     style PivotS fill:#ffd54f,stroke:#333,color:black
-```
+
 
 
