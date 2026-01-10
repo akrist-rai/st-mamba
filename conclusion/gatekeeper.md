@@ -1,8 +1,10 @@
+```python
 # 1.3 Apply Graph Mask (Using Adjacency Matrix)
 
         mask = (adj == 0).view(1, 1, N, N)
 
-        scores = scores.masked_fill(mask, -1e9) 
+        scores = scores.masked_fill(mask, -1e9)
+```
 
 
 "Gatekeeper" of your Graph Neural Network.
