@@ -176,7 +176,7 @@ nn.init.xavier_uniform_(self.W_value.weight)
 
 > **Weight initialization decides whether your network starts learning smoothly, chaotically, or not at all.**
 
----
+
 
 ```
 
