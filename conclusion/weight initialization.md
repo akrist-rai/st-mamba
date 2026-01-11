@@ -178,8 +178,4 @@ nn.init.xavier_uniform_(self.W_value.weight)
 
 
 
-```
 
----
-
-```
